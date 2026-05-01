@@ -14,6 +14,11 @@ ThreatShield Platform is an advanced cybersecurity solution designed for **finan
 
 This platform combines **Threat Intelligence Aggregation** with a **Dynamic Security Policy Enforcer** to automatically detect and block threats in real-time — without manual intervention.
 
+*Correlates threat data from multiple OSINT sources to improve detection accuracy
+*Uses risk-based scoring to prioritize critical threats
+*Designed with scalability and modular architecture for enterprise environments
+*Minimizes manual intervention through intelligent automation
+
 ---
 
 ## 🎯 Project Objective
@@ -33,6 +38,8 @@ To build a system that:
 ### 👨‍💻 SOC Analyst
 
 * Needs: Clean, actionable threat intelligence
+* Receives prioritized alerts based on severity
+Quickly identifies high-risk threats with minimal noise
 * Workflow:
 
   * Monitors dashboard
