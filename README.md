@@ -1,277 +1,143 @@
-# 🛡️ ThreatShield Platform
-
-### Advanced Threat Intelligence Platform (TIP) & Dynamic Policy Enforcer
-
----
-
-## 📌 Overview
-
-ThreatShield Platform is an advanced cybersecurity solution designed for **financial institutions** to combat modern cyber threats such as:
-
-* Zero-day attacks
-* Advanced Persistent Threats (APTs)
-* Malicious IP/domain-based attacks
-
-This platform combines **Threat Intelligence Aggregation** with a **Dynamic Security Policy Enforcer** to automatically detect and block threats in real-time — without manual intervention.
-
-*Correlates threat data from multiple OSINT sources to improve detection accuracy
-*Uses risk-based scoring to prioritize critical threats
-*Designed with scalability and modular architecture for enterprise environments
-*Minimizes manual intervention through intelligent automation
+# 🛡️ ThreatShield Platform  
+### Advanced Threat Intelligence Platform (TIP) & Dynamic Policy Enforcer  
 
 ---
 
-## 🎯 Project Objective
+## 📌 Project Overview  
 
-To build a system that:
+ThreatShield Platform is a cybersecurity project developed to understand and implement **Threat Intelligence and Dynamic Security Enforcement** concepts.
 
-* Collects **Open Source Intelligence (OSINT)** from multiple threat feeds
-* Normalizes and stores threat data efficiently
-* Integrates with a **SIEM system (ELK Stack)**
-* Automatically enforces firewall rules using system-level commands
-* Enables **real-time, automated threat mitigation**
+This project is structured **week-wise**, where each phase focuses on building different components of a modern security system.
 
 ---
 
-## 🧑‍💻 User Personas
+## 🎯 Objective  
 
-### 👨‍💻 SOC Analyst
-
-* Needs: Clean, actionable threat intelligence
-* Receives prioritized alerts based on severity
-Quickly identifies high-risk threats with minimal noise
-* Workflow:
-
-  * Monitors dashboard
-  * Investigates real threats only
-  * Avoids data overload
-
-### 🛠️ Security Engineer
-
-* Needs: Automated network defense
-* Workflow:
-
-  * Reviews firewall rule updates
-  * Monitors blocked IPs/domains
-  * Ensures system efficiency
-
-### 📋 Compliance Officer
-
-* Needs: Audit-ready logs
-* Workflow:
-
-  * Reviews logs for compliance (e.g., PCI-DSS)
-  * Ensures regulatory adherence
+- Understand real-world cyber threats  
+- Build a Threat Intelligence Platform (TIP)  
+- Implement dynamic security policies  
+- Learn backend security architecture step-by-step  
 
 ---
 
-## 🚀 Key Features
-
-* 🔍 OSINT Threat Feed Aggregation
-* 🧠 Data Normalization & Risk Scoring
-* 📊 SIEM Integration (ELK Stack)
-* 🔐 Dynamic Firewall Rule Enforcement
-* ⚡ Real-time Threat Blocking
-* 🧾 Immutable Logging for Compliance
-* 🔄 Rollback Mechanism for False Positives
-
----
-
-## 🏗️ System Architecture
-
-```
-OSINT Feeds (VirusTotal, AlienVault OTX, etc.)
-            ↓
-    Python Data Aggregator
-            ↓
-        MongoDB
-            ↓
-   Data Normalization Engine
-            ↓
-      Elasticsearch (SIEM)
-            ↓
-        Kibana Dashboard
-            ↓
- Dynamic Policy Enforcer (Python)
-            ↓
-     Linux iptables Firewall
-```
-
----
-
-## 📂 Project Structure
+## 📂 Project Structure  
 
 ```
 ThreatShield-Platform/
 │
-├── aggregator/        # OSINT data collection scripts
-├── database/          # MongoDB schema & configs
-├── normalization/     # Data cleaning & risk scoring
-├── enforcer/          # Dynamic firewall rule engine
-├── siem/              # ELK integration setup
-├── logs/              # System logs
-├── docs/              # Documentation
+├── week1/   # Research & basic setup
+├── week2/   # Implementation & development
+├── week3/   # Advanced features & improvements
+│
 └── README.md
 ```
 
 ---
 
-## ⚙️ Installation & Setup
+## 📅 Weekly Progress  
 
-### 1️⃣ Clone Repository
+### 📘 Week 1 – Research & Planning  
+- Studied cyber threats (APT, zero-day attacks)  
+- Understood Threat Intelligence Platforms (TIP)  
+- Designed initial architecture  
+- Identified tools & technologies  
 
-```bash
-git clone https://github.com/YOUR-USERNAME/ThreatShield-Platform.git
+---
+
+### ⚙️ Week 2 – Core Development  
+- Setup backend environment  
+- Implemented basic APIs  
+- Created initial threat data handling logic  
+- Connected database (if implemented)  
+
+---
+
+### 🚀 Week 3 – Advanced Implementation  
+- Improved threat detection logic  
+- Added automation for security policies  
+- Enhanced system workflow  
+- Optimized backend structure  
+
+---
+
+## 🏗️ Technologies Used  
+
+- **Backend:** Node.js, Express.js  
+- **Database:** MongoDB (if used)  
+- **Tools:** Git, GitHub  
+- **API Testing:** Postman  
+
+---
+
+## ⚙️ How to Run the Project  
+
+### 1. Clone Repository  
+```
+git clone https://github.com/ad-shah/ThreatShield-Platform.git
 cd ThreatShield-Platform
 ```
 
 ---
 
-### 2️⃣ Install Dependencies
-
-```bash
-pip install -r requirements.txt
+### 2. Navigate to Week Folder  
+```
+cd week1
+# OR
+cd week2
+# OR
+cd week3
 ```
 
 ---
 
-### 3️⃣ Setup MongoDB
-
-```bash
-sudo systemctl start mongod
+### 3. Install Dependencies (if applicable)  
+```
+npm install
 ```
 
 ---
 
-### 4️⃣ Configure Environment Variables
-
-Create `.env` file:
-
+### 4. Run Project  
 ```
-MONGO_URI=your_mongodb_uri
-API_KEY_VIRUSTOTAL=your_api_key
-API_KEY_OTX=your_api_key
+npm start
 ```
 
 ---
 
-### 5️⃣ Run Modules
+## 🧪 Project Usage  
 
-#### ▶️ Run Aggregator
-
-```bash
-python aggregator/main.py
-```
-
-#### ▶️ Run Policy Enforcer
-
-```bash
-sudo python enforcer/enforcer.py
-```
+- Explore each week folder to understand development stages  
+- Run code inside respective folders  
+- Test APIs using Postman  
+- Analyze how threat handling evolves weekly  
 
 ---
 
-## 🔄 Dynamic Policy Enforcement Example
+## 🔮 Future Enhancements  
 
-```bash
-iptables -A INPUT -s <Malicious_IP> -j DROP
-```
-
-Automatically blocks malicious traffic based on real-time intelligence.
-
----
-
-## 📊 SIEM Dashboard
-
-* Visualize threats in **Kibana**
-* Monitor:
-
-  * Blocked IPs
-  * Risk scores
-  * Threat trends
+- AI-based threat detection  
+- Real-time alert system  
+- Dashboard for visualization  
+- Integration with external threat intelligence APIs  
 
 ---
 
-## 🧪 Four-Week Development Roadmap
+## 🤝 Contribution  
 
-### 📅 Week 1: OSINT Ingestion
-
-* Integrate 3+ threat feeds
-* Store data in MongoDB
-* Deduplicate entries
-
-### 📅 Week 2: Normalization & SIEM
-
-* Implement risk scoring
-* Integrate ELK Stack
-* Create dashboards
-
-### 📅 Week 3: Policy Enforcement
-
-* Build Python daemon
-* Automate iptables rules
-* Enable real-time blocking
-
-### 📅 Week 4: Testing & Reporting
-
-* Add rollback mechanism
-* Finalize dashboards
-* Document system
+1. Fork the repository  
+2. Create a new branch  
+3. Make changes  
+4. Commit and push  
+5. Create Pull Request  
 
 ---
 
-## 📈 Key Performance Indicators (KPIs)
+## 👩‍💻 Author  
 
-* ✅ Real-time threat ingestion
-* ✅ Zero duplicate indicators
-* ✅ Automated firewall updates
-* ✅ Low latency impact
-* ✅ Accurate threat blocking
+**Astha shah** **Sakshi Gadilkar** **Abhinav**
 
 ---
 
-## ⚠️ Security Considerations
+## ⭐ Support  
 
-* Run firewall scripts with caution (requires sudo access)
-* Implement rollback for false positives
-* Protect API keys using environment variables
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a branch (`feature-name`)
-3. Commit changes
-4. Push to your fork
-5. Create Pull Request
-
----
-
-## 🐛 Issues
-
-Report bugs via GitHub Issues.
-
----
-
-## 📄 License
-
-MIT License
-
----
-
-## 👩‍💻 Author
-
-**Sakshi Gadilkar**
-
-* GitHub: https://github.com/YOUR-USERNAME
-* LinkedIn: (Add your profile)
-
----
-
-## ⭐ Support
-
-If you find this project useful, give it a ⭐ and share!
-
----
-
+If you like this project, give it a ⭐ on GitHub!
