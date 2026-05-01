@@ -134,10 +134,10 @@ npm start
 
 ## 👩‍💻 Author  
 
-**Astha shah** **Sakshi Gadilkar** **Abhinav**
+**Astha shah** | **Sakshi Gadilkar** | **Abhinav**
 
 ---
 
 ## ⭐ Support  
 
-If you like this project, give it a ⭐ on GitHub!
+If you like this project, give it a ⭐ on GitHub! ~ Currently in progress
