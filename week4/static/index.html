@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>TIP — SOC Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #060a0f;
+    color: #b0bec5;
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 56px;
+    background: #0b1117;
+    border-bottom: 1px solid #1a2633;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-size: 1.1rem;
+    color: #00e5ff;
+    letter-spacing: .12em;
+  }
+  .logo span { color: #eceff1; }
+  #clock {
+    color: #00e5ff;
+    font-size: .85rem;
+  }
+  .pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00e676;
+    box-shadow: 0 0 8px #00e676;
+    animation: blink 2s infinite;
+    display: inline-block;
+    margin-right: 8px;
+  }
+  @keyframes blink {
+    0%,100%{opacity:1}
+    50%{opacity:.3}
+  }
+  main { padding: 1.5rem 2rem; max-width: 1400px; margin: 0 auto; }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: #0b1117;
+    border: 1px solid #1a2633;
+    padding: 1.2rem 1.4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: #00e5ff;
+  }
+  .stat-card.danger::after { background: #ff1744; }
+  .stat-card.warn::after   { background: #ff9100; }
+  .stat-card.good::after   { background: #00e676; }
+  .stat-label {
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #37474f;
+  }
+  .stat-value {
+    font-size: 2.2rem;
+    color: #eceff1;
+    margin: .25rem 0;
+  }
+  .stat-card.danger .stat-value { color: #ff1744; }
+  .stat-card.warn   .stat-value { color: #ff9100; }
+  .stat-card.good   .stat-value { color: #00e676; }
+
+  /* Panels */
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media(max-width:900px){ .panels { grid-template-columns: 1fr; } }
+  .panel {
+    background: #0b1117;
+    border: 1px solid #1a2633;
+    padding: 1.2rem;
+  }
+  .panel-title {
+    font-size: .72rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #00e5ff;
+    margin-bottom: 1rem;
+  }
+  .panel-title::before { content: '// '; color: #37474f; }
+
+  /* Table */
+  .full-panel {
+    background: #0b1117;
+    border: 1px solid #1a2633;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .controls {
+    display: flex;
+    gap: .8rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .controls input,
+  .controls select {
+    background: #060a0f;
+    border: 1px solid #1a2633;
+    color: #b0bec5;
+    padding: .45rem .8rem;
+    font-family: monospace;
+    font-size: .9rem;
+    outline: none;
+  }
+  .controls input:focus,
+  .controls select:focus { border-color: #00e5ff; }
+  .btn {
+    padding: .45rem 1rem;
+    font-family: monospace;
+    font-size: .85rem;
+    cursor: pointer;
+    border: 1px solid #1a2633;
+    background: transparent;
+    color: #b0bec5;
+    transition: all .15s;
+  }
+  .btn:hover { border-color: #00e5ff; color: #00e5ff; }
+  .btn-danger { border-color: #ff1744; color: #ff1744; }
+  .btn-danger:hover { background: rgba(255,23,68,.12); }
+
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  th {
+    text-align: left;
+    font-size: .68rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #37474f;
+    padding: .6rem .8rem;
+    border-bottom: 1px solid #1a2633;
+  }
+  td {
+    padding: .55rem .8rem;
+    border-bottom: 1px solid rgba(26,38,51,.6);
+    font-size: .8rem;
+  }
+  tr:hover td { background: rgba(0,229,255,.03); }
+
+  .badge {
+    display: inline-block;
+    padding: .1rem .45rem;
+    font-size: .68rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .badge-ip     { background: rgba(0,229,255,.1);  color: #00e5ff; }
+  .badge-domain { background: rgba(255,145,0,.1);  color: #ff9100; }
+  .badge-url    { background: rgba(0,230,118,.1);  color: #00e676; }
+  .badge-hash   { background: rgba(255,23,68,.1);  color: #ff1744; }
+
+  .risk-bar { display: flex; align-items: center; gap: .5rem; }
+  .risk-track {
+    flex: 1;
+    height: 4px;
+    background: #1a2633;
+    min-width: 60px;
+  }
+  .risk-fill { height: 100%; }
+
+  /* Feed list */
+  .feed-item {
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem 0;
+    border-bottom: 1px solid rgba(26,38,51,.6);
+    font-size: .85rem;
+  }
+  .feed-item:last-child { border: none; }
+  .feed-count { color: #00e5ff; }
+
+  /* Audit */
+  .audit-entry {
+    padding: .4rem .6rem;
+    border-left: 2px solid #1a2633;
+    margin-bottom: .3rem;
+    font-size: .77rem;
+    display: flex;
+    gap: 1rem;
+  }
+  .audit-entry.BLOCK    { border-color: #ff1744; }
+  .audit-entry.ROLLBACK { border-color: #ff9100; }
+  .audit-time      { color: #37474f; min-width: 180px; }
+  .audit-action    { color: #00e5ff; min-width: 80px; }
+  .audit-indicator { color: #eceff1; }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: #0b1117;
+    border: 1px solid #00e5ff;
+    color: #eceff1;
+    padding: .8rem 1.4rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all .3s;
+    pointer-events: none;
+    z-index: 9000;
+    font-size: .9rem;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.error { border-color: #ff1744; }
+
+  .loading {
+    color: #37474f;
+    font-size: .8rem;
+    padding: 2rem;
+    text-align: center;
+  }
+  .empty {
+    color: #37474f;
+    font-size: .8rem;
+    padding: 1.5rem;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">TIP//<span>SOC</span> Dashboard</div>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <span class="pulse"></span>
+    <span style="color:#00e676;font-size:.8rem">LIVE</span>
+    <span id="clock"></span>
+  </div>
+</header>
+
+<main>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Indicators</div>
+      <div class="stat-value" id="s-total">—</div>
+    </div>
+    <div class="stat-card danger">
+      <div class="stat-label">High Risk</div>
+      <div class="stat-value" id="s-highrisk">—</div>
+    </div>
+    <div class="stat-card warn">
+      <div class="stat-label">Blocked IPs</div>
+      <div class="stat-value" id="s-blocked">—</div>
+    </div>
+    <div class="stat-card danger">
+      <div class="stat-label">Critical</div>
+      <div class="stat-value" id="s-critical">—</div>
+    </div>
+    <div class="stat-card good">
+      <div class="stat-label">Active Feeds</div>
+      <div class="stat-value" id="s-feeds">—</div>
+    </div>
+  </div>
+
+  <!-- PANELS -->
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-title">Indicators by Source Feed</div>
+      <div id="feed-list" class="loading">Loading...</div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Indicators by Type</div>
+      <div id="type-list" class="loading">Loading...</div>
+    </div>
+  </div>
+
+  <!-- INDICATORS TABLE -->
+  <div class="full-panel">
+    <div class="panel-title">Threat Indicator Feed</div>
+    <div class="controls">
+      <input type="text" id="search"
+             placeholder="Search indicator..."
+             oninput="applyFilters()"/>
+      <select id="type-filter" onchange="applyFilters()">
+        <option value="">All Types</option>
+        <option value="ip">IP</option>
+        <option value="domain">Domain</option>
+        <option value="url">URL</option>
+        <option value="hash">Hash</option>
+      </select>
+      <select id="score-filter" onchange="applyFilters()">
+        <option value="0">All Scores</option>
+        <option value="50">Score 50+</option>
+        <option value="70">Score 70+ (High)</option>
+        <option value="90">Score 90+ (Critical)</option>
+      </select>
+      <select id="blocked-filter" onchange="applyFilters()">
+        <option value="">All</option>
+        <option value="true">Blocked</option>
+        <option value="false">Active</option>
+      </select>
+      <button class="btn" onclick="loadIndicators()">Refresh</button>
+    </div>
+    <div id="indicators-table">
+      <div class="loading">Loading threat data...</div>
+    </div>
+  </div>
+
+  <!-- AUDIT LOG -->
+  <div class="full-panel">
+    <div class="panel-title">Audit Log</div>
+    <div id="audit-log">
+      <div class="loading">Loading...</div>
+    </div>
+  </div>
+
+</main>
+
+<div id="toast"></div>
+
+<script>
+const API = '';
+let allIndicators = [];
+
+function updateClock() {
+  document.getElementById('clock').textContent =
+    new Date().toUTCString().replace(' GMT','Z');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function toast(msg, error=false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (error ? ' error' : '');
+  setTimeout(() => el.className = '', 3000);
+}
+
+function riskColor(score) {
+  if (score >= 90) return '#ff1744';
+  if (score >= 70) return '#ff9100';
+  return '#00e676';
+}
+
+async function loadStats() {
+  const r = await fetch(`${API}/api/stats`);
+  const d = await r.json();
+
+  document.getElementById('s-total').textContent =
+    d.total.toLocaleString();
+  document.getElementById('s-highrisk').textContent =
+    d.high_risk.toLocaleString();
+  document.getElementById('s-blocked').textContent =
+    d.blocked.toLocaleString();
+  document.getElementById('s-critical').textContent =
+    d.critical.toLocaleString();
+  document.getElementById('s-feeds').textContent =
+    Object.keys(d.by_source || {}).length;
+
+  // Feed list
+  const feedEl = document.getElementById('feed-list');
+  feedEl.innerHTML = Object.entries(d.by_source || {})
+    .sort((a,b) => b[1]-a[1])
+    .map(([name, cnt]) => `
+      <div class="feed-item">
+        <span>${name}</span>
+        <span class="feed-count">${cnt.toLocaleString()}</span>
+      </div>`)
+    .join('');
+
+  // Type list
+  const typeEl = document.getElementById('type-list');
+  typeEl.innerHTML = Object.entries(d.by_type || {})
+    .sort((a,b) => b[1]-a[1])
+    .map(([name, cnt]) => `
+      <div class="feed-item">
+        <span><span class="badge badge-${name}">${name}</span></span>
+        <span class="feed-count">${cnt.toLocaleString()}</span>
+      </div>`)
+    .join('');
+}
+
+async function loadIndicators() {
+  const r = await fetch(`${API}/api/indicators?limit=500`);
+  const d = await r.json();
+  allIndicators = d.data || [];
+  applyFilters();
+}
+
+function applyFilters() {
+  const search  = document.getElementById('search').value.toLowerCase();
+  const type    = document.getElementById('type-filter').value;
+  const score   = parseInt(document.getElementById('score-filter').value) || 0;
+  const blocked = document.getElementById('blocked-filter').value;
+
+  let rows = allIndicators.filter(ind => {
+    if (search && !ind.indicator.toLowerCase().includes(search))
+      return false;
+    if (type && ind.type !== type)
+      return false;
+    if (ind.risk_score < score)
+      return false;
+    if (blocked === 'true'  && !ind.blocked)
+      return false;
+    if (blocked === 'false' && ind.blocked)
+      return false;
+    return true;
+  });
+
+  const el = document.getElementById('indicators-table');
+  if (!rows.length) {
+    el.innerHTML = '<div class="empty">No indicators match filters.</div>';
+    return;
+  }
+
+  el.innerHTML = `<table>
+    <thead>
+      <tr>
+        <th>Indicator</th>
+        <th>Type</th>
+        <th>Risk Score</th>
+        <th>Source</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    ${rows.map(ind => `
+      <tr>
+        <td style="color:#eceff1">${ind.indicator}</td>
+        <td><span class="badge badge-${ind.type}">${ind.type}</span></td>
+        <td>
+          <div class="risk-bar">
+            <div class="risk-track">
+              <div class="risk-fill" style="width:${ind.risk_score}%;
+                background:${riskColor(ind.risk_score)}"></div>
+            </div>
+            <span style="color:${riskColor(ind.risk_score)};min-width:30px">
+              ${ind.risk_score}
+            </span>
+          </div>
+        </td>
+        <td style="color:#b0bec5">${ind.source || '—'}</td>
+        <td>
+          ${ind.blocked
+            ? '<span style="color:#ff1744">BLOCKED</span>'
+            : '<span style="color:#00e676">ACTIVE</span>'}
+        </td>
+        <td>
+          ${ind.blocked
+            ? `<button class="btn btn-danger"
+                onclick="rollback('${ind.indicator}')">
+                Rollback
+               </button>`
+            : '—'}
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+async function rollback(indicator) {
+  if (!confirm(`Rollback block on ${indicator}?`)) return;
+  const r = await fetch(
+    `${API}/api/rollback/${encodeURIComponent(indicator)}`,
+    { method: 'POST' }
+  );
+  if (r.ok) {
+    toast(`Block on ${indicator} reversed`);
+    await loadIndicators();
+    await loadAuditLog();
+    await loadStats();
+  } else {
+    const err = await r.json();
+    toast(err.detail || 'Rollback failed', true);
+  }
+}
+
+async function loadAuditLog() {
+  const r = await fetch(`${API}/api/audit?limit=50`);
+  const d = await r.json();
+  const el = document.getElementById('audit-log');
+
+  if (!d.data?.length) {
+    el.innerHTML = '<div class="empty">No audit events yet.</div>';
+    return;
+  }
+
+  el.innerHTML = d.data.map(e => `
+    <div class="audit-entry ${e.action}">
+      <span class="audit-time">
+        ${e.timestamp
+          ? e.timestamp.replace('T',' ').slice(0,19)+'Z'
+          : '—'}
+      </span>
+      <span class="audit-action">${e.action}</span>
+      <span class="audit-indicator">${e.indicator}</span>
+    </div>`).join('');
+}
+
+async function init() {
+  await Promise.all([
+    loadStats(),
+    loadIndicators(),
+    loadAuditLog()
+  ]);
+}
+
+init();
+setInterval(() => {
+  loadStats();
+  loadIndicators();
+  loadAuditLog();
+}, 30000);
+</script>
+</body>
+</html>
