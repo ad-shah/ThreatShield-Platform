@@ -246,8 +246,7 @@ project1/
   |   |   `-- index.html        # Dashboard UI
   |   `-- tests/
   |       `-- test_week4.py
-  |
-  `-- start.sh                  # One command startup
+
 
 ---
 
